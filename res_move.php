@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /******************************************************************************
- * RES Move.
+ * res_move
  *
  * This script is intended for use as a migration tool for Reddit Enhancement
  * Suite settings between browsers.  Currently only tested on and working
@@ -213,6 +213,7 @@ FF;
                 break;
         }
 
+        //set our profile directories.
         $this->profile_arr['chrome'] = $chrome_dir;
         $this->profile_arr['safari'] = $safari_dir;
         $this->profile_arr['firefox']['from'] = $firefox_from_dir;
@@ -227,6 +228,9 @@ FF;
      * @param to Integer
      *************************************************************************/
     private function convert() {
+        //filenames pulled mostly from http://bit.ly/wu21CD.  The opera
+        //filename was pulled directly from my filesystem.  No idea if
+        //this changes between machines though I don't think it should...
         $chrome_file = "chrome-extension_kbmfpngjjgdllneeigpgjifpgocmfgmb_0.localstorage";
         $firefox_file = "store.json";
         $safari_search_path = $this->profile_arr['safari']."safari-extension_com.honestbleeps.redditenhancementsuite-*.localstorage"; 
@@ -234,6 +238,7 @@ FF;
         $safari_file = $safari_file_array[0]; 
         $opera_file = 'chrome-extension_gfdcmdcpehpkengmkhkbpifajmbhfgae_0.localstorage';
 
+        //array of full paths to files.
         $file_arr = array(
             self::WWW_C=>$this->profile_arr['chrome'].$chrome_file,
             self::WWW_S=>$this->profile_arr['safari'].$safari_file,
@@ -244,6 +249,8 @@ FF;
             self::WWW_O=>$this->profile_arr['opera'].$opera_file,
         );
 
+        //this is where we convert.  Firefox is the only browser to store data 
+        //in JSON format.  Everyone else uses a SQLite db.
         $from_db = null;
         $to_db = null;
         $data_arr = array();
@@ -269,10 +276,14 @@ FF;
             case self::WWW_F:
                 $new_json = array();
                 foreach($data_arr as $key => $value) {
+                    //items coming out of a SQLite db had encoding issues.
                     $key = iconv('ASCII', 'UTF8//IGNORE',$key);
                     $value = iconv('ASCII','UTF8//IGNORE',$value);
                     $new_json[$key] = $value;
                 }
+                //items coming out of a SQLite db had encoding issues.  could
+                //make this smarter by not running iconv/str_replace on
+                //firefox-to-firefox conversions.
                 file_put_contents($file_arr[$this->to]['to'], str_replace('\u0000','',json_encode($new_json)));
                 break;
             case self::WWW_C:
