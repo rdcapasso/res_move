@@ -223,9 +223,6 @@ FF;
 
     /**************************************************************************
      * Converts RES data store from one browser's format to another.
-     *
-     * @param from Integer
-     * @param to Integer
      *************************************************************************/
     private function convert() {
         //filenames pulled mostly from http://bit.ly/wu21CD.  The opera
