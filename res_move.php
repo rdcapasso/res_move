@@ -53,6 +53,12 @@ class RESMove {
 
     //initialize some object-wide variables
     private $profile_array = array();
+    private $browser_array = array(
+        self::WWW_C => "Google Chrome",
+        self::WWW_S => "Safari",
+        self::WWW_F => "Mozilla Firefox",
+        self::WWW_O => "Opera",
+    );
     private $from;
     private $to;
 
@@ -84,7 +90,7 @@ class RESMove {
 Hello!  Please select the SOURCE browser which you would like to export your RES settings:
 [1] Google Chrome
 [2] Safari
-[3] Firefox
+[3] Mozilla Firefox
 [4] Opera
 
 ===========> 
@@ -94,7 +100,7 @@ STR;
 Thanks!  Please enter the DESTINATION browser into which you would like to import your RES settings:
 [1] Google Chrome
 [2] Safari
-[3] Firefox
+[3] Mozilla Firefox
 [4] Opera
 
 ===========> 
@@ -238,7 +244,7 @@ FF;
         //array of full paths to files.
         $file_arr = array(
             self::WWW_C=>$this->profile_arr['chrome'].$chrome_file,
-            self::WWW_S=>$this->profile_arr['safari'].$safari_file,
+            self::WWW_S=>$safari_file,
             self::WWW_F=>array(
                 'from' => $this->profile_arr['firefox']['from'].$firefox_file,
                 'to'=>$this->profile_arr['firefox']['to'].$firefox_file,
@@ -300,6 +306,8 @@ FF;
                 die("Wow.  That's not supposed to happen.  Destination browser not set.\n");
                 break;
         } 
+
+        echo "All set!  We've copied your settings over from {$this->browser_array[$this->from]} to {$this->browser_array[$this->to]}.\n";
         
     }
 }
